@@ -1,0 +1,18 @@
+import mido
+
+def test_load_midi(file_path):
+    try:
+        # Attempt to open and parse the MIDI file
+        midi_file = mido.MidiFile(file_path)
+        print(f"Successfully loaded MIDI file: {file_path}")
+        print(f"File info: {midi_file}")
+        return True
+    except Exception as e:
+        print(f"Failed to load MIDI file: {file_path}")
+        print(f"Error: {e}")
+        return False
+
+if __name__ == "__main__":
+    # Replace 'example.mid' with the path to your MIDI file
+    midi_file_path = "example.mid"
+    test_load_midi(midi_file_path)
