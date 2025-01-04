@@ -52,7 +52,7 @@ def load_midi(midi_file_path):
         notes = []
         current_time = 0
         ticks_per_beat = mid.ticks_per_beat
-        tempo = 606060  # Adjusted tempo for synchronization
+        tempo = 606060
 
         active_notes = {}
 
@@ -87,8 +87,6 @@ def preprocess_midi(midi_notes):
     return midi_notes
 
 # --- Audio Processing ---
-
-
 def get_pitch(audio_data, sample_rate):
     y = np.frombuffer(audio_data, dtype=np.int16).astype(np.float32)
     n = len(y)
@@ -96,7 +94,7 @@ def get_pitch(audio_data, sample_rate):
     spectrum = np.fft.rfft(windowed)
     frequencies = np.fft.rfftfreq(n, d=1.0 / sample_rate)
     magnitude = np.abs(spectrum)
-    peak_idx = np.argmax(magnitude)  # Find the peak frequency
+    peak_idx = np.argmax(magnitude)
     pitch = frequencies[peak_idx] if peak_idx > 0 else 0
     return pitch if pitch > 0 else 0
 
@@ -116,9 +114,9 @@ def audio_callback(in_data, frame_count, time_info, status):
                 if len(freq_history) > MAX_HISTORY * SAMPLE_RATE / CHUNK:
                     freq_history.pop(0)
             else:
-                current_pitch = 0  # No valid pitch detected
+                current_pitch = 0
         else:
-            current_pitch = 0  # No audio input
+            current_pitch = 0
     return (in_data, pyaudio.paContinue)
 
 # --- Stop Button ---
@@ -139,7 +137,7 @@ window.title("Karaoke Practice")
 
 fig = Figure(figsize=(10, 6), dpi=100)
 ax = fig.add_subplot(111)
-ax.set_xlim(-MAX_HISTORY / 4, MAX_HISTORY - (MAX_HISTORY / 4))  # Shifted to the left
+ax.set_xlim(-MAX_HISTORY / 4, MAX_HISTORY - (MAX_HISTORY / 4))
 ax.set_ylim(50, 2000)
 ax.set_yscale('log')
 ax.set_xlabel("Time (seconds)")
@@ -147,7 +145,7 @@ ax.set_ylabel("Frequency (Hz)")
 
 # Add the visualization elements
 user_line, = ax.plot([], [], label="User Pitch", color='b')
-center_line = ax.axvline(0, color='green', linestyle='--')  # Adjusted to the center
+center_line = ax.axvline(0, color='green', linestyle='--')
 canvas = FigureCanvasTkAgg(fig, master=window)
 canvas_widget = canvas.get_tk_widget()
 canvas_widget.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
@@ -166,17 +164,15 @@ SPARKLE_COLOR = 'gold'  # Color of sparkles
 def draw_sparkles():
     global TARGET_PITCH_HISTORY, current_pitch, filled_boxes
 
-    # Clear existing sparkles immediately
     for artist in ax.collections:
         artist.remove()
 
-    if current_pitch > 0:  # Only draw sparkles if a pitch is detected
-        elapsed_time = time.time() - START_TIME  # Define elapsed_time within this scope
+    if current_pitch > 0:
+        elapsed_time = time.time() - START_TIME
         for note in TARGET_PITCH_HISTORY:
             note_key = (note['start_time'], note['frequency'])
 
             if abs(current_pitch - note['frequency']) <= SPARKLE_THRESHOLD:
-                # Update progress for the target box
                 if note_key not in filled_boxes:
                     filled_boxes[note_key] = [(note['start_time'], elapsed_time)]
                 else:
@@ -199,11 +195,11 @@ def draw_sparkles():
 
                 # Generate sparkles only when matching the pitch
                 if abs(current_pitch - note['frequency']) <= SPARKLE_THRESHOLD:
-                    sparkle_x = [0 for _ in range(SPARKLE_COUNT)]  # Center on the current time
+                    sparkle_x = [0 for _ in range(SPARKLE_COUNT)]
                     sparkle_y = [
                         note['frequency'] + random.uniform(-2, 2)
                         for _ in range(SPARKLE_COUNT)
-                    ]  # Slightly offset around the target frequency
+                    ]
                     sparkle_sizes = [
                         random.uniform(SPARKLE_MIN_SIZE, SPARKLE_MAX_SIZE)
                         for _ in range(SPARKLE_COUNT)
@@ -238,7 +234,7 @@ def draw_note_boxes():
             end_time - start_time, 10,
             edgecolor='red', facecolor='none', linewidth=2, linestyle='-'
         )
-        rect.set_capstyle('round')  # Set rounded corners
+        rect.set_capstyle('round')
         ax.add_patch(rect)
         note_boxes.append(rect)
 
@@ -275,7 +271,7 @@ def update_plot():
     canvas.draw()
     window.after(10, update_plot)
 
-# --- MP3 Playback ---
+# --- MP3 Player ---
 def play_mp3(mp3_path):
     def audio_thread():
         global START_TIME
