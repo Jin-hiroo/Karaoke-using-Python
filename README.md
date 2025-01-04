@@ -1,9 +1,7 @@
 # Karaoke system with Python
 
-注意
-最新バージョンのPythonでは、正常に動作しません
-3.9 < 3.13 のものを使用してください
+Warning
+Only works with ver 3.9 < 3.13
 
-インポート
-pip install
-
+import
+pip install librosa sys threading pygame mido tkinter numpy pyaudio os
