@@ -34,8 +34,8 @@ SCROLL_SPEED = 0.5  # Speed of the scrolling view
 MP3_START_OFFSET = 0  # Offset in seconds to start the audio track
 
 # --- File Paths ---
-midi_file = "colors-of-the-Wind-Bass.mid"
-mp3_file = "Colors of the Wind #Bass.mp3"
+midi_file = "colors-of-the-wind-bass.mid"
+mp3_file = "colors-of-the-wind-bass.mp3"
 
 # --- Check Files ---
 if not os.path.exists(midi_file):
